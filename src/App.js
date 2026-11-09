@@ -1,13 +1,14 @@
 import React from 'react';
 import ShoppingCart from './components/ShoppingCart';
+import './App.css';
 
-const App = () => {
+function App() {
     return (
         <div className="App">
-            <h1>Shopping Cart Application</h1>
+            <h1>Welcome to the Shopping Cart</h1>
             <ShoppingCart />
         </div>
     );
-};
+}
 
 export default App;
