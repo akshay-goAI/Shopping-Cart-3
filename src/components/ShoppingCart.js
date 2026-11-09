@@ -1,33 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { removeItem } from '../redux/cartActions';
 
 const ShoppingCart = () => {
-    const [cartItems, setCartItems] = useState([]);
+    const cartItems = useSelector(state => state.cart.items);
+    const dispatch = useDispatch();
 
-    const addItem = (item) => {
-        setCartItems([...cartItems, item]);
-    };
-
-    const removeItem = (itemId) => {
-        setCartItems(cartItems.filter(item => item.id !== itemId));
-    };
-
-    const calculateTotal = () => {
-        return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    const handleRemoveItem = (itemId) => {
+        dispatch(removeItem(itemId));
     };
 
     return (
         <div>
-            <h2>Shopping Cart</h2>
-            <ul>
-                {cartItems.map(item => (
-                    <li key={item.id}>
-                        {item.name} - ${item.price} x {item.quantity} 
-                        <button onClick={() => removeItem(item.id)}>Remove</button>
-                    </li>
-                ))}
-            </ul>
-            <h3>Total: ${calculateTotal()}</h3>
-            <button onClick={() => addItem({ id: 'new-item', name: 'New Item', price: 10, quantity: 1 })}>Add Item</button>
+            <h2>Your Shopping Cart</h2>
+            {cartItems.length === 0 ? (
+                <p>Your cart is empty.</p>
+            ) : (
+                <ul>
+                    {cartItems.map(item => (
+                        <li key={item.item_id}>
+                            {item.name} - ${item.price} 
+                            <button onClick={() => handleRemoveItem(item.item_id)}>Remove</button>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 };
