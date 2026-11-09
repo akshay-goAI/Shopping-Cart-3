@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ShoppingCart = () => {
     const [cartItems, setCartItems] = useState([]);
     const [totalCost, setTotalCost] = useState(0);
 
-    const addItemToCart = (item) => {
-        setCartItems([...cartItems, item]);
-        setTotalCost(totalCost + item.price);
+    useEffect(() => {
+        // Calculate total cost whenever cartItems change
+        const total = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+        setTotalCost(total);
+    }, [cartItems]);
+
+    const addItem = (item) => {
+        setCartItems(prevItems => [...prevItems, item]);
     };
 
-    const removeItemFromCart = (itemId) => {
-        const updatedItems = cartItems.filter(item => item.item_id !== itemId);
-        const updatedTotal = updatedItems.reduce((acc, item) => acc + item.price, 0);
-        setCartItems(updatedItems);
-        setTotalCost(updatedTotal);
+    const removeItem = (itemId) => {
+        setCartItems(prevItems => prevItems.filter(item => item.item_id !== itemId));
     };
 
     return (
@@ -22,13 +24,13 @@ const ShoppingCart = () => {
             <ul>
                 {cartItems.map(item => (
                     <li key={item.item_id}>
-                        {item.name} - ${item.price} 
-                        <button onClick={() => removeItemFromCart(item.item_id)}>Remove</button>
+                        {item.name} - ${item.price} x {item.quantity}
+                        <button onClick={() => removeItem(item.item_id)}>Remove</button>
                     </li>
                 ))}
             </ul>
-            <h3>Total Cost: ${totalCost}</h3>
-            <button onClick={() => addItemToCart({ item_id: '1', name: 'Sample Item', price: 10 })}>Add Item</button>
+            <h3>Total Cost: ${totalCost.toFixed(2)}</h3>
+            {/* Add functionality to add items here */}
         </div>
     );
 };
